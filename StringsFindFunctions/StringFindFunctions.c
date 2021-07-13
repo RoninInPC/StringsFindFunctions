@@ -32,3 +32,28 @@ IntArray FindStringsNonHash(char* NameFile, char* FindString) {
 	Answer.Size = sizeAns - 1;
 	return Answer;
 }
+IntArray FindStringsNonHashNonFile(char* MainString, char* FindString) {
+	int sizeAns = 1;
+	int* IntAns = (int*)malloc(sizeAns * sizeof(int));
+	int SizeMainString = strlen(MainString);
+	int SizeFindString = strlen(FindString);
+	int j = 0;
+	for (int i = 0; i < SizeMainString; i++) {
+		if (MainString[i] == FindString[j]) {
+			if (j + 1 == SizeFindString) {
+				IntAns = realloc(IntAns, sizeAns * sizeof(int));
+				IntAns[sizeAns - 1] =i-j;
+				sizeAns++;
+			}
+			j++;
+
+		}
+		else{
+			j = 0;
+		}
+	}
+	IntArray Answer;
+	Answer.Arr = IntAns;
+	Answer.Size = sizeAns - 1;
+	return Answer;
+}

@@ -1,9 +1,10 @@
-#include<stdio.h>
+﻿#include<stdio.h>
+#include<stdlib.h>
 #include"StringFindFunctions.h"
+#include"md5.h"
+#include"sha256.h"
 int main() {
-	IntArray Ans1 = FindStringsNonHash("input.txt", "abcd");
-	for (int i = 0; i < Ans1.Size; i++) {
-		printf("%d\n", Ans1.Arr[i]);
-	}
+	unsigned char* Un = get_md5("Boy");
+	unsigned char* In = get_sha256("Boy");
 	return 0;
 }

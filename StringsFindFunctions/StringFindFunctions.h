@@ -6,4 +6,5 @@ struct IntArray {
 };
 typedef struct IntArray IntArray;
 IntArray FindStringsNonHash(char* NameFile, char* FindString);
+IntArray FindStringsNonHashNonFile(char* MainString, char* FindString);
 #endif 

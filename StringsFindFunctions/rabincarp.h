@@ -3,6 +3,6 @@
 
 int rk_search(char*, char*, unsigned int*);
 int rkmd5_search(char*, char*, unsigned int*);
-
+int rksha256_search(char*, char*, unsigned int*);
 
 #endif 

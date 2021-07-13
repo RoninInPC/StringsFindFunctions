@@ -1,4 +1,6 @@
 #include "rabincarp.h"
+#include "sha256.h"
+#include "md5.h"
 #define BASE 2004991
 #define P 2
 int my_mod(int num, int diver) {
@@ -61,8 +63,7 @@ int rkmd5_search(char* src, char* ptr, unsigned int* col) {
         p_pow = my_mod(p_pow * P, BASE);
     }
         for (i = 0; i <= n - m; i++) {
-            if (tmp_hash[0] == ptr_hash[0] && tmp_hash[1] ==
-                ptr_hash[1]) {
+            if (tmp_hash[0] == ptr_hash[0] && tmp_hash[1] == ptr_hash[1]) {
                 (*col)++;
                 flag = 1;
                 for (j = 0; j < m; j++) {
@@ -80,4 +81,33 @@ int rkmd5_search(char* src, char* ptr, unsigned int* col) {
         }
     free(ptr_hash);
     return -1;
-}
+}int rksha256_search(char* src, char* ptr, unsigned int* col) {
+    unsigned long long* ptr_hash = (unsigned long long*)get_sha256_len(ptr, strlen(ptr));
+    unsigned long long* tmp_hash = (unsigned long long*)get_sha256_len(src, strlen(ptr));
+    int res;
+    int n = strlen(src), m = strlen(ptr), p_pow = 1;
+    int i, j;
+    int flag;
+    for (i = 0; i < m - 1; i++) {
+        p_pow = my_mod(p_pow * P, BASE);
+    }
+    for (i = 0; i <= n - m; i++) {
+        if (tmp_hash[0] == ptr_hash[0] && tmp_hash[1] == ptr_hash[1]) {
+            (*col)++;
+            flag = 1;
+            for (j = 0; j < m; j++) {
+                if (src[i + j] != ptr[j]) {
+                    flag = 0;
+                    break;
+                }
+            }
+            if (flag == 1) {
+                return i;
+            }
+        }
+        free(tmp_hash);
+        tmp_hash = get_sha256_len(&src[i + 1], strlen(ptr));
+    }
+    free(ptr_hash);
+    return -1;
+}

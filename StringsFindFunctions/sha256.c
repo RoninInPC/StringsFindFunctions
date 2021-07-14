@@ -13,7 +13,7 @@ int consts[64] = { 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0
 0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
 unsigned int rotate_right(unsigned int value, int shift) {
-    return value >> shift | value << (32 - shift);
+    return value >> shift | value >> (32 - shift);
 }
 unsigned char* get_sha256(char* in) {
     //константы
@@ -43,20 +43,23 @@ unsigned char* get_sha256(char* in) {
     }
     unsigned int* X = (unsigned int*)(msg_for_decode); //приведение 1 инт - 4 байта
     int Xsize = size / 4;
-    X = realloc(X, Xsize + 48 * sizeof(unsigned int));
+    X = realloc(X, (Xsize + 48) * sizeof(unsigned int));
+
+    unsigned int s0,s1;
     for (int i = 16; i < 63; i++) {
-        unsigned int s0 = (rotate_right(X[i - 15], 7) | rotate_right(X[i - 15], 18) | (X[i - 15] >> 18));
-        unsigned int s1 = (rotate_right(X[i - 2], 17) | rotate_right(X[i - 2], 19) | (X[i - 2] >> 10));
+        s0 = _rotr(X[i - 15], 7) | _rotr(X[i - 15], 18) | (X[i - 15] >> 18);
+        s1 = _rotr(X[i - 2], 17) | _rotr(X[i - 2], 19) | (X[i - 2] >> 10);
         X[i] = (X[i - 16] + X[i - 7] + s0 + s1);
     }
     unsigned int a = h0, b = h1, c = h2, d = h3, e = h4, f = h5, g = h6, h = h7;
+    unsigned int E0, Ma, t2, E1, Ch, t1;
     for (int i = 0; i < 63; i++) {
-        unsigned int E0 = rotate_right(a, 2) | rotate_right(a, 13) | rotate_right(a, 22);
-        unsigned int Ma = (a & b) | (a & c) | (b & c);
-        unsigned int t2 = E0 + Ma;
-        unsigned int E1 = rotate_right(e, 6) | rotate_right(e, 11) | rotate_right(e, 25);
-        unsigned int Ch = (e & f) | ((!e) & g);
-        unsigned int t1 = h + E1 + Ch + consts[i] + X[i];
+        E0 = _rotr(a, 2) | _rotr(a, 13) | _rotr(a, 22);
+        Ma = (a & b) | (a & c) | (b & c);
+        t2 = E0 + Ma;
+        E1 = _rotr(e, 6) | _rotr(e, 11) | _rotr(e, 25);
+        Ch = (e & f) | ((!e) & g);
+        t1 = h + E1 + Ch + consts[i] + X[i];
         h = g;
         g = f;
         f = e;
@@ -82,7 +85,7 @@ unsigned char* get_sha256(char* in) {
     res[5] = h5;
     res[6] = h6;
     res[7] = h7;
-    free(msg_for_decode);
+    res[8] = '\0';
     return (unsigned char*)res;
 }
 unsigned char* get_sha256_len(char* in, int len) {

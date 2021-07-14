@@ -176,7 +176,6 @@ unsigned char* get_md5(char* in) {
     res[2] = C;
     res[3] = D;
     res[4] = '\0';
-    free(msg_for_decode);
     return (unsigned char*)res;
 }
 unsigned char* get_md5_len(char* in, int len) {

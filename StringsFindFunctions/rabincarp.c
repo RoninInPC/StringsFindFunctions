@@ -1,6 +1,10 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "rabincarp.h"
 #include "sha256.h"
 #include "md5.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include<string.h>
 #define BASE 2004991
 #define P 2
 int my_mod(int num, int diver) {
@@ -20,13 +24,13 @@ int rk_hash(char* a, int len) {
     return res;
 }
 int rk_search(char* src, char* ptr, unsigned int* col) {
-    int ptr_hash = rk_hash(ptr, strlen(ptr)), tmp_hash = rk_hash(src,
-        strlen(ptr));
+    int ptr_hash = rk_hash(ptr, strlen(ptr)), tmp_hash = rk_hash(src, strlen(ptr));
     int res;
     int n = strlen(src), m = strlen(ptr), p_pow = 1;
     int i, j;
+    int k = 0;
     int flag;
-    char* colliz = malloc(m + 1);
+    char* colliz = malloc((m + 1));
     for (i = 0; i < m - 1; i++) {
         p_pow = my_mod(p_pow * P, BASE);
     }
@@ -44,18 +48,19 @@ int rk_search(char* src, char* ptr, unsigned int* col) {
                 }
             }
             if (flag == 1) {
-                return i;
+                k++;
             }
         }
         tmp_hash = my_mod((tmp_hash - src[i] * p_pow) * P + src[m +
             i], BASE);
     }
-    return -1;
+    return k;
 }
 int rkmd5_search(char* src, char* ptr, unsigned int* col) {
     unsigned long long* ptr_hash = (unsigned long long*)get_md5_len(ptr, strlen(ptr));
     unsigned long long* tmp_hash = (unsigned long long*)get_md5_len(src, strlen(ptr));
     int res;
+    int k=0;
     int n = strlen(src), m = strlen(ptr), p_pow = 1;
     int i, j;
     int flag;
@@ -73,20 +78,22 @@ int rkmd5_search(char* src, char* ptr, unsigned int* col) {
                     }
                 }
                 if (flag == 1) {
-                    return i;
+                    k++;
                 }
             }
             free(tmp_hash);
             tmp_hash = get_md5_len(&src[i + 1], strlen(ptr));
         }
     free(ptr_hash);
-    return -1;
+    return k;
 }int rksha256_search(char* src, char* ptr, unsigned int* col) {
     unsigned long long* ptr_hash = (unsigned long long*)get_sha256_len(ptr, strlen(ptr));
     unsigned long long* tmp_hash = (unsigned long long*)get_sha256_len(src, strlen(ptr));
+    //printf("%llu %llu\n", ptr_hash, tmp_hash);
     int res;
     int n = strlen(src), m = strlen(ptr), p_pow = 1;
     int i, j;
+    int k = 0;
     int flag;
     for (i = 0; i < m - 1; i++) {
         p_pow = my_mod(p_pow * P, BASE);
@@ -102,12 +109,12 @@ int rkmd5_search(char* src, char* ptr, unsigned int* col) {
                 }
             }
             if (flag == 1) {
-                return i;
+                k++;
             }
         }
         free(tmp_hash);
         tmp_hash = get_sha256_len(&src[i + 1], strlen(ptr));
     }
     free(ptr_hash);
-    return -1;
+    return k;
 }

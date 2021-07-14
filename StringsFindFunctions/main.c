@@ -40,27 +40,27 @@ int main() {
         start_time();
             IntArray Ans = FindStringsNonHash(file_name[i], word[i]);
         get_time();
-        printf("time in int = %d, time in sec = %T, num = %d\n", timer, timer, Ans.Size);
+        printf("time in int = %d, time in sec = %.3f, num = %d\n", timer, timer, Ans.Size);
         start_time();
             char* mem = load_mem_file(file_name[i]);
             IntArray Ans2 = FindStringsNonHashNonFile(mem, word[i]);
         get_time();
-        printf("time in int = %d, time in sec = %T, num = %d\n", timer, timer, Ans.Size);
+        printf("time in int = %d, time in sec = %.3f, num = %d\n", timer, timer, Ans.Size);
         start_time();
         int l = 0;
             int k = rk_search(mem, word[i], &l);
         get_time();
-        printf("time in int = %d, time in sec = %T, num = %d, collizy = %d\n", timer, timer, k, l);
+        printf("time in int = %d, time in sec = %.3f, num = %d, collizy = %d\n", timer, timer, k, l);
         start_time();
         l = 0;
             k = rkmd5_search(mem, word[i], &l);
         get_time();
-        printf("time in int = %d, time in sec = %T, num = %d, collizy = %d\n", timer, timer, k, l);
+        printf("time in int = %d, time in sec = %.3f, num = %d, collizy = %d\n", timer, timer, k, l);
         start_time();
         l = 0;
             k = rksha256_search(mem, word[i], &l);
         get_time();
-        printf("time in int = %d, time in sec = %T, num = %d, collizy = %d\n", timer, timer, k, l);
+        printf("time in int = %d, time in sec = %.3f, num = %d, collizy = %d\n", timer, timer, k, l);
 }
 	return 0;
 }
